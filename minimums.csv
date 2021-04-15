@@ -1,0 +1,18 @@
+DefinedCategories,Category,WhichRole,Minimum
+Cataract,Cataract (S),S,86
+Laser Surgery - YAG Capsulotomy,Laser Surgery - YAG Capsulotomy (S),S,5
+Laser Surgery - Laser trabeculoplasty,Laser Surgery - Laser trabeculoplasty (S),S,5
+Laser Surgery - Laser iridotomy,Laser Surgery - Laser iridotomy (S),S,4
+Laser Surgery - Panretinal laser photcoagulation,Laser Surgery - Panretinal laser photcoagulation (S),S,10
+Keratoplasty,Keratoplasty (S+A),S+A,5
+Pterygium/conjunctival and other cornea,Pterygium/conjunctival and other cornea (S),S,3
+Keratorefractive Surgery,Keratorefractive Surgery (S+A),S+A,6
+Strabismus,Strabismus (S),S,10
+Glaucoma - Filtering/shunting procedures,Glaucoma - Filtering/shunting procedures (S),S,5
+Retinal Vitreous,Retinal Vitreous (S+A),S+A,10
+Intravitreal Injection,Intravitreal Injection (S),S,10
+Oculoplastic and Orbit,Oculoplastic and Orbit (S),S,28
+Oculoplastic and Orbit - Eyelid laceration,Oculoplastic and Orbit - Eyelid laceration (S),S,3
+Oculoplastic and Orbit - Chalazion Excision,Oculoplastic and Orbit - Chalazion Excision (S),S,3
+Oculoplastic and Orbit - Ptosis/blepharoplasty,Oculoplastic and Orbit - Ptosis/blepharoplasty (S),S,3
+Globe Trauma,Globe Trauma (S),S,4
