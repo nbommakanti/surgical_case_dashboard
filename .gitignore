@@ -1,3 +1,5 @@
 /.DS_Store
 /ACGME-CaseLogs-nbommakanti.csv
 /__pycache__
+videos/*
+*.code-workspace
