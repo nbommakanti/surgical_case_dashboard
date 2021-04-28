@@ -113,10 +113,10 @@ if uploaded_file is not None: # Only run once file is uploaded
             )
         if show_data:
             output = (df_role
-                        .loc[:, columns]
                         .loc[lambda x: x['TypeDesc'].astype(str).str.contains(filter_TypeDesc, case=False)]
                         .loc[lambda x: x['CPTDesc'].astype(str).str.contains(filter_CPTDesc, case=False)]
                         .loc[lambda x: x['YearOfCase'].isin(filter_YearOfCase)]
+                        .loc[:, columns]
             )
             # Change datetime format and sort (reverse chronological) for convenient viewing
             output = output.sort_values('ProcedureDate', ascending=False)
