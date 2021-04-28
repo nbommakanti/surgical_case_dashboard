@@ -94,6 +94,7 @@ if uploaded_file is not None: # Only run once file is uploaded
         # Options and output for all data 
         with st.beta_expander(''):
             show_data = st.checkbox('Show Data', value=True)
+            # Input for column selection
             useful_cols = [
                 'ProcedureDate', 'ResidentRole', 'AreaDesc',
                 'TypeDesc', 'DefinedCategories', 'CPTDesc', 'YearOfCase'
@@ -101,21 +102,28 @@ if uploaded_file is not None: # Only run once file is uploaded
             columns = st.multiselect(
                 'Select columns', 
                 options=list(df_role.columns),
-                default=useful_cols)
+                default=useful_cols
+            )
+            # Inputs for filtering by different variables
+            filter_ResidentRole = st.multiselect(
+                label='Filter `ResidentRole`',
+                options=['Primary', 'Assistant'],
+                default=['Primary', 'Assistant']
+            )
             filter_AreaDesc = st.text_input(label='Filter `AreaDesc`')
             filter_TypeDesc = st.text_input(label='Filter `TypeDesc`')
             filter_DefinedCategories = st.text_input(
                 label='Filter `DefinedCategories`')
             filter_CPTDesc = st.text_input(label='Filter `CPTDesc`')
             case_years = df_role['YearOfCase'].unique().tolist()
-            # st.write(case_years.tolist())
             filter_YearOfCase = st.multiselect(
                 label='Filter `YearOfCase`', 
                 options=case_years,
                 default=case_years,
             )
         if show_data:
-            output = (df_role
+            output = (df
+                        .loc[lambda x: x['ResidentRole'].isin(filter_ResidentRole)]
                         .loc[lambda x: x['AreaDesc'].astype(str).str.contains(filter_AreaDesc, case=False)]
                         .loc[lambda x: x['TypeDesc'].astype(str).str.contains(filter_TypeDesc, case=False)]
                         .loc[lambda x: x['DefinedCategories'].astype(str).str.contains(filter_DefinedCategories, case=False)]
@@ -126,7 +134,9 @@ if uploaded_file is not None: # Only run once file is uploaded
             # Change datetime format and sort (reverse chronological) for convenient viewing
             output = output.sort_values('ProcedureDate', ascending=False)
             output['ProcedureDate'] = output['ProcedureDate'].dt.strftime(
-                '%b %d, %Y')
+                # '%b %d, %Y' # e.g. Apr 27, 2021. st.dataframe() doesn't sort these strings correctly when clicking column headers
+                '%Y-%m-%d'
+            )
             st.write("""
                 Here is all of your case log data. 
                 You can select different columns and filter by procedure type and case year (expand the options above)! 
