@@ -102,7 +102,10 @@ if uploaded_file is not None: # Only run once file is uploaded
                 'Select columns', 
                 options=list(df_role.columns),
                 default=useful_cols)
+            filter_AreaDesc = st.text_input(label='Filter `AreaDesc`')
             filter_TypeDesc = st.text_input(label='Filter `TypeDesc`')
+            filter_DefinedCategories = st.text_input(
+                label='Filter `DefinedCategories`')
             filter_CPTDesc = st.text_input(label='Filter `CPTDesc`')
             case_years = df_role['YearOfCase'].unique().tolist()
             # st.write(case_years.tolist())
@@ -113,10 +116,12 @@ if uploaded_file is not None: # Only run once file is uploaded
             )
         if show_data:
             output = (df_role
-                        .loc[:, columns]
+                        .loc[lambda x: x['AreaDesc'].astype(str).str.contains(filter_AreaDesc, case=False)]
                         .loc[lambda x: x['TypeDesc'].astype(str).str.contains(filter_TypeDesc, case=False)]
+                        .loc[lambda x: x['DefinedCategories'].astype(str).str.contains(filter_DefinedCategories, case=False)]
                         .loc[lambda x: x['CPTDesc'].astype(str).str.contains(filter_CPTDesc, case=False)]
                         .loc[lambda x: x['YearOfCase'].isin(filter_YearOfCase)]
+                        .loc[:, columns]
             )
             # Change datetime format and sort (reverse chronological) for convenient viewing
             output = output.sort_values('ProcedureDate', ascending=False)
