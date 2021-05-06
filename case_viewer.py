@@ -84,43 +84,50 @@ if uploaded_file is not None: # Only run once file is uploaded
     with data:
         # Options and output minimums data
         st.write('### Tables')
-        with st.beta_expander(''):
-            show_table = st.checkbox('Show Table', value=True)
-        if show_table:
-            st.write('Here is a table with your progress toward the minimum requirements:')
-            minimums = get_minimums(df, mins)
-            st.write(minimums.set_index('Category'))
+        st.write('Here is a table with your progress toward the minimum requirements:')
+        minimums = get_minimums(df, mins)
+        st.write(minimums.set_index('Category'))
 
         # Options and output for all data 
         with st.beta_expander(''):
-            show_data = st.checkbox('Show Data', value=True)
+            # show_data = st.checkbox('Show Data', value=True)
+            show_data = True
             # Input for column selection
+            st.write('#### Select Columns')
             useful_cols = [
                 'ProcedureDate', 'ResidentRole', 'AreaDesc',
                 'TypeDesc', 'DefinedCategories', 'CPTDesc', 'YearOfCase'
             ]
             columns = st.multiselect(
-                'Select columns', 
+                'Columns', 
                 options=list(df_role.columns),
                 default=useful_cols
             )
-            # Inputs for filtering by different variables
-            filter_ResidentRole = st.multiselect(
-                label='Filter `ResidentRole`',
-                options=['Primary', 'Assistant'],
-                default=['Primary', 'Assistant']
-            )
-            filter_AreaDesc = st.text_input(label='Filter `AreaDesc`')
-            filter_TypeDesc = st.text_input(label='Filter `TypeDesc`')
-            filter_DefinedCategories = st.text_input(
-                label='Filter `DefinedCategories`')
-            filter_CPTDesc = st.text_input(label='Filter `CPTDesc`')
-            case_years = df_role['YearOfCase'].unique().tolist()
-            filter_YearOfCase = st.multiselect(
-                label='Filter `YearOfCase`', 
-                options=case_years,
-                default=case_years,
-            )
+            st.write('#### Filter Data')
+            filter_cols = st.beta_columns(6)
+            with filter_cols[0]:
+                # Inputs for filtering by different variables
+                filter_ResidentRole = st.multiselect(
+                    label='`ResidentRole`',
+                    options=['Primary', 'Assistant'],
+                    default=['Primary', 'Assistant']
+                )
+            with filter_cols[1]:
+                filter_AreaDesc = st.text_input(label='`AreaDesc`')
+            with filter_cols[2]:
+                filter_TypeDesc = st.text_input(label='`TypeDesc`')
+            with filter_cols[3]:
+                filter_DefinedCategories = st.text_input(
+                    label='`DefinedCategories`')
+            with filter_cols[4]:
+                filter_CPTDesc = st.text_input(label='`CPTDesc`')
+            with filter_cols[5]:
+                case_years = df_role['YearOfCase'].unique().tolist()
+                filter_YearOfCase = st.multiselect(
+                    label='`YearOfCase`', 
+                    options=case_years,
+                    default=case_years,
+                )
         if show_data:
             output = (df
                         .loc[lambda x: x['ResidentRole'].isin(filter_ResidentRole)]
@@ -138,9 +145,7 @@ if uploaded_file is not None: # Only run once file is uploaded
                 '%Y-%m-%d'
             )
             st.write("""
-                Here is all of your case log data. 
-                You can select different columns and filter by procedure type and case year (expand the options above)! 
-                Try clicking the column headers to sort the data or the arrow at the right to expand the table.
+                Here is all of your case log data:
                 """)
             st.write(output)
 
