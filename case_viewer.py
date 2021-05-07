@@ -18,8 +18,9 @@ header1 = st.beta_container()
 overview = st.beta_container()
 timeline = st.beta_container()
 header2 = st.beta_container()
-minimums = st.beta_container()
-data = st.beta_container()
+minimums_plot = st.beta_container()
+minimums_data = st.beta_container()
+all_data = st.beta_container()
 
 # Generate app elements
 with title:
@@ -35,7 +36,7 @@ with sidebar:
         1. Download your case log data in `.csv` format from the ACGME website (see below for the link)
         1. Upload your data in the "Choose a file" section
         1. Select whether you want to see your cases as *Primary* or *Assistant* surgeon
-        1. Expand any options (denoted with an underlined `+`) and adjust them as you see fit
+        1. Expand or collapse any options (denoted with an underlined `+` or `-`) and adjust them as you see fit
     """)
     st.write('## Useful links')
     st.markdown("""
@@ -75,25 +76,25 @@ if uploaded_file is not None: # Only run once file is uploaded
     with header2:
         st.write('## Cases as Primary and Assistant Surgeon')
         
-    with minimums:
+    with minimums_plot:
         st.write('### Minimums')
         st.write('Here is your progress toward the ACGME minimum requirements:')
         chart_minimums = plot_minimums(df, mins)
         st.altair_chart(chart_minimums, use_container_width=True)
 
-    with data:
-        # Options and output minimums data
+    with minimums_data:
+        # Minimums data
         st.write('### Tables')
         st.write('Here is a table with your progress toward the minimum requirements:')
         minimums = get_minimums(df, mins)
         st.write(minimums.set_index('Category'))
 
-        # Options and output for all data 
-        with st.beta_expander(''):
-            # show_data = st.checkbox('Show Data', value=True)
-            show_data = True
+    with all_data:
+        # Filtering options
+        with st.beta_expander('', expanded=True):
+            st.write('#### Options')
+            st.write('(click the minus above to collapse this section)')
             # Input for column selection
-            st.write('#### Select Columns')
             useful_cols = [
                 'ProcedureDate', 'ResidentRole', 'AreaDesc',
                 'TypeDesc', 'DefinedCategories', 'CPTDesc', 'YearOfCase'
@@ -103,51 +104,59 @@ if uploaded_file is not None: # Only run once file is uploaded
                 options=list(df_role.columns),
                 default=useful_cols
             )
-            st.write('#### Filter Data')
-            filter_cols = st.beta_columns(6)
+            filter_cols = st.beta_columns(4)
             with filter_cols[0]:
-                # Inputs for filtering by different variables
+                first_date = df['ProcedureDate'].min()
+                last_date = df['ProcedureDate'].max()
+                date_range = st.date_input(
+                    label='Dates',
+                    value=[first_date, last_date],
+                    min_value=first_date,
+                    max_value=last_date,
+                )
+            date_range = pd.to_datetime(date_range)
+            with filter_cols[1]:
+                filter_term = st.text_input(
+                    label='Filter')
+            with filter_cols[2]:
                 filter_ResidentRole = st.multiselect(
-                    label='`ResidentRole`',
+                    label='Role',
                     options=['Primary', 'Assistant'],
                     default=['Primary', 'Assistant']
                 )
-            with filter_cols[1]:
-                filter_AreaDesc = st.text_input(label='`AreaDesc`')
-            with filter_cols[2]:
-                filter_TypeDesc = st.text_input(label='`TypeDesc`')
             with filter_cols[3]:
-                filter_DefinedCategories = st.text_input(
-                    label='`DefinedCategories`')
-            with filter_cols[4]:
-                filter_CPTDesc = st.text_input(label='`CPTDesc`')
-            with filter_cols[5]:
                 case_years = df_role['YearOfCase'].unique().tolist()
                 filter_YearOfCase = st.multiselect(
-                    label='`YearOfCase`', 
+                    label='Case Year', 
                     options=case_years,
                     default=case_years,
                 )
-        if show_data:
-            output = (df
-                        .loc[lambda x: x['ResidentRole'].isin(filter_ResidentRole)]
-                        .loc[lambda x: x['AreaDesc'].astype(str).str.contains(filter_AreaDesc, case=False)]
-                        .loc[lambda x: x['TypeDesc'].astype(str).str.contains(filter_TypeDesc, case=False)]
-                        .loc[lambda x: x['DefinedCategories'].astype(str).str.contains(filter_DefinedCategories, case=False)]
-                        .loc[lambda x: x['CPTDesc'].astype(str).str.contains(filter_CPTDesc, case=False)]
-                        .loc[lambda x: x['YearOfCase'].isin(filter_YearOfCase)]
-                        .loc[:, columns]
-            )
-            # Change datetime format and sort (reverse chronological) for convenient viewing
-            output = output.sort_values('ProcedureDate', ascending=False)
-            output['ProcedureDate'] = output['ProcedureDate'].dt.strftime(
-                # '%b %d, %Y' # e.g. Apr 27, 2021. st.dataframe() doesn't sort these strings correctly when clicking column headers
-                '%Y-%m-%d'
-            )
-            st.write("""
-                Here is all of your case log data:
-                """)
-            st.write(output)
+        
+        # Filter by role, case year, procedure date, and selected columns
+        output = (df
+                    .loc[lambda x: x['ResidentRole'].isin(filter_ResidentRole)]
+                    .loc[lambda x: x['YearOfCase'].isin(filter_YearOfCase)]
+                    .loc[lambda x: x['ProcedureDate'] >= date_range[0]]
+                    .loc[lambda x: x['ProcedureDate'] <= date_range[1]]
+                    .loc[:, columns]
+        )
+
+        # Filter by search term(s)
+        mask = output.apply(lambda row: row.astype(str).str.contains(filter_term, case=False).any(), axis=1)
+        output = output.loc[mask]
+
+        # Change datetime format, sort (reverse chronological), and move to index for convenient viewing
+        output['ProcedureDate'] = output['ProcedureDate'].dt.strftime(
+            # '%b %d, %Y' # e.g. Apr 27, 2021. st.dataframe() doesn't sort these strings correctly when clicking column headers
+            '%Y-%m-%d'
+        )
+        output = output.set_index('ProcedureDate').sort_index(ascending=False)
+
+        # Display data
+        st.write("""
+            Here is all of your case log data:
+            """)
+        st.write(output)
 
 # https://github.com/streamlit/streamlit/issues/972
 hide_footer_style = """
