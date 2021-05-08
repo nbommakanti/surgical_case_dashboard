@@ -92,46 +92,45 @@ if uploaded_file is not None: # Only run once file is uploaded
     with all_data:
         # Filtering options
         with st.beta_expander('', expanded=True):
-            # with st.form(key='options'):
-            # the new st.form is not yet supported on streamlit sharing. commenting this out for now (this means the table will throw an error temporarily when selecting dates)
-            # Input for column selection
-            useful_cols = [
-                'ProcedureDate', 'ResidentRole', 'AreaDesc',
-                'TypeDesc', 'DefinedCategories', 'CPTDesc', 'YearOfCase'
-            ]
-            columns = st.multiselect(
-                'Columns', 
-                options=list(df_role.columns),
-                default=useful_cols
-            )
-            filter_cols = st.beta_columns(4)
-            with filter_cols[0]:
-                first_date = df['ProcedureDate'].min()
-                last_date = df['ProcedureDate'].max()
-                date_range = st.date_input(
-                    label='Dates',
-                    value=[first_date, last_date],
-                    min_value=first_date,
-                    max_value=last_date,
+            with st.form(key='options'):
+                # Input for column selection
+                useful_cols = [
+                    'ProcedureDate', 'ResidentRole', 'AreaDesc',
+                    'TypeDesc', 'DefinedCategories', 'CPTDesc', 'YearOfCase'
+                ]
+                columns = st.multiselect(
+                    'Columns', 
+                    options=list(df_role.columns),
+                    default=useful_cols
                 )
-            date_range = pd.to_datetime(date_range)
-            with filter_cols[1]:
-                filter_term = st.text_input(
-                    label='Filter')
-            with filter_cols[2]:
-                filter_ResidentRole = st.multiselect(
-                    label='Role',
-                    options=['Primary', 'Assistant'],
-                    default=['Primary', 'Assistant']
-                )
-            with filter_cols[3]:
-                case_years = df_role['YearOfCase'].unique().tolist()
-                filter_YearOfCase = st.multiselect(
-                    label='Case Year', 
-                    options=case_years,
-                    default=case_years,
-                )
-                # submitted = st.form_submit_button('Apply Selections')
+                filter_cols = st.beta_columns(4)
+                with filter_cols[0]:
+                    first_date = df['ProcedureDate'].min()
+                    last_date = df['ProcedureDate'].max()
+                    date_range = st.date_input(
+                        label='Dates',
+                        value=[first_date, last_date],
+                        min_value=first_date,
+                        max_value=last_date,
+                    )
+                date_range = pd.to_datetime(date_range)
+                with filter_cols[1]:
+                    filter_term = st.text_input(
+                        label='Filter')
+                with filter_cols[2]:
+                    filter_ResidentRole = st.multiselect(
+                        label='Role',
+                        options=['Primary', 'Assistant'],
+                        default=['Primary', 'Assistant']
+                    )
+                with filter_cols[3]:
+                    case_years = df_role['YearOfCase'].unique().tolist()
+                    filter_YearOfCase = st.multiselect(
+                        label='Case Year', 
+                        options=case_years,
+                        default=case_years,
+                    )
+                submitted = st.form_submit_button('Apply Selections')
         
         # Filter by role, case year, procedure date, and selected columns
         output = (df
