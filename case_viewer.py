@@ -11,16 +11,16 @@ st.set_page_config(
     )
 
 # Set app layout
-title = st.beta_container()
+title = st.container()
 sidebar = st.sidebar
-expander1 = st.beta_expander('', expanded=True)
-header1 = st.beta_container()
-overview = st.beta_container()
-timeline = st.beta_container()
-header2 = st.beta_container()
-minimums_plot = st.beta_container()
-minimums_data = st.beta_container()
-all_data = st.beta_container()
+expander1 = st.expander('', expanded=True)
+header1 = st.container()
+overview = st.container()
+timeline = st.container()
+header2 = st.container()
+minimums_plot = st.container()
+minimums_data = st.container()
+all_data = st.container()
 
 # Generate app elements
 with title:
@@ -44,7 +44,7 @@ with sidebar:
     - [ACGME Case Log Information](https://www.acgme.org/Portals/0/PFAssets/ProgramResources/OPH_CaseLogInfo.pdf?ver=2021-03-15-133325-270)
     """)
 
-uploaded_file = expander1.file_uploader('Choose a file')
+uploaded_file = expander1.file_uploader('Choose file')
 
 if uploaded_file is not None: # Only run once file is uploaded
     df = read_and_clean_data(uploaded_file)
@@ -91,7 +91,7 @@ if uploaded_file is not None: # Only run once file is uploaded
 
     with all_data:
         # Filtering options
-        with st.beta_expander('', expanded=True):
+        with st.expander('', expanded=True):
             # Input for column selection
             useful_cols = [
                 'ProcedureDate', 'ResidentRole', 'AreaDesc',
@@ -102,7 +102,7 @@ if uploaded_file is not None: # Only run once file is uploaded
                 options=list(df_role.columns),
                 default=useful_cols
             )
-            filter_cols = st.beta_columns(5)
+            filter_cols = st.columns(5)
 
             # Dates (temporary - will replace with parallel branch)
             first_date = df['ProcedureDate'].min()
