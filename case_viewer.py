@@ -11,16 +11,16 @@ st.set_page_config(
     )
 
 # Set app layout
-title = st.beta_container()
+title = st.container()
 sidebar = st.sidebar
-expander1 = st.beta_expander('', expanded=True)
-header1 = st.beta_container()
-overview = st.beta_container()
-timeline = st.beta_container()
-header2 = st.beta_container()
-minimums_plot = st.beta_container()
-minimums_data = st.beta_container()
-all_data = st.beta_container()
+expander1 = st.expander('', expanded=True)
+header1 = st.container()
+overview = st.container()
+timeline = st.container()
+header2 = st.container()
+minimums_plot = st.container()
+minimums_data = st.container()
+all_data = st.container()
 
 # Generate app elements
 with title:
