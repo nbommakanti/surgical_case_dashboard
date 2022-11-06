@@ -3,7 +3,7 @@
 ## Overview
 This is an app to visualize cases completed during the course of an ophthalmology residency.
 
-Try the app here: https://share.streamlit.io/nbommakanti/surgical_case_dashboard/case_viewer.py 
+Try the app here: surgery.streamlit.app
 
 ## Demonstration
 
