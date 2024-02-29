@@ -40,7 +40,7 @@ with sidebar:
     """)
     st.write('## Useful links')
     st.markdown("""
-    - [ACGME Login](https://apps.acgme-i.org/connect/login)
+    - [ACGME Login](https://apps.acgme.org/connect/login)
     - [ACGME Case Log Information](https://www.acgme.org/Portals/0/PFAssets/ProgramResources/OPH_CaseLogInfo.pdf?ver=2021-03-15-133325-270)
     """)
 
