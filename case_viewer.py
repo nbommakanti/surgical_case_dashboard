@@ -7,7 +7,7 @@ from functions import plot_cases, plot_minimums, plot_timeline, read_and_clean_d
 st.set_page_config(
     page_title='Surgical Case Dashboard',
     layout='wide', 
-    initial_sidebar_state='collapsed',
+    initial_sidebar_state='expanded',
     )
 
 # Set app layout
